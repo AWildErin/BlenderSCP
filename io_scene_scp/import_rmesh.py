@@ -64,7 +64,8 @@ def load(self, context, filepath=""):
                     material = bpy.data.materials.new(textureName)
                     material.use_nodes = True
                     bsdf = material.node_tree.nodes["Principled BSDF"]
-                    bsdf.inputs["Specular"].default_value = 0.4
+                    # TODO: This breaks in 4.0
+                    #bsdf.inputs["Specular"].default_value = 0.4
                     texImage = material.node_tree.nodes.new("ShaderNodeTexImage")
                     material.node_tree.links.new(bsdf.inputs["Base Color"], texImage.outputs["Color"])
 
@@ -105,6 +106,7 @@ def load(self, context, filepath=""):
             tris.append([p1,p2,p3])
         
         mesh.from_pydata(verts, [], tris)
+        mesh.flip_normals()
 
         # Setup materials
         uvlist = [i for poly in mesh.polygons for vidx in poly.vertices for i in uvs[vidx]]
